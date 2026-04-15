@@ -71,7 +71,7 @@ The `.csv` datasets (`_combined_data` and `_median_data`) contain the following 
 * **`cell index`** *(Only in `_combined_data.csv`)*: The index of each single segmented cone within the $1^{\circ}\times1^{\circ}$ field of view.
 
 #### Primary ORG parameters
-* **`opl0406avg`**: Corresponds to **$\Delta OPL_{max}$**. The maximum optical path length change of the cone outer segment, calculated directly from the raw measurements by averaging the five highest $\Delta$OPL values.
+* **`opl0406avg`**: Corresponds to **$\Delta OPL_{max}$**. The maximum optical path length change of the cone outer segment, calculated directly from the raw measurements by averaging the five highest $\Delta OPL$ values.
 * **`OPL_pk_fit`**: Corresponds to **$\Delta OPL_{fitting,max}$**. The peak amplitude of the outer segment elongation derived mathematically from the overdamped RLC model fit.
 * **`t_pk`**: Corresponds to **$t_{pk}$**. The time-to-peak (in seconds), by solving t for the first zero of the RLC model’s derivative d($\Delta OPL_{fit}$)/dt = 0.
 * **`tau_b_fit`**: Corresponds to **$$\tau_{b}$$**. The late contraction rate (in $s^{-1}$) of the outer segment, describing the late, slow contraction rate of the outer segment.

@@ -103,6 +103,78 @@ all_frac_b.extend([0] * len(t_range))
 # ==========================================
 # 2. PROBABILISTIC CURVE FITTING
 # ==========================================
+# ==========================================
+# 2. MATHEMATICAL MODELS
+# ==========================================
+def objective_function_helper(tau, eta, Y_eq, Y_start, measurement_times):
+    """
+    Model: Exponential Increase towards Y_eq + Multiplicative Step Decrease.
+    Computes predicted OPL values at the measurement times.
+    """
+    if tau <= 0: return np.full_like(measurement_times, np.inf, dtype=float)
+    
+    T_start = measurement_times[0]
+    lamb = 1.0 / tau
+    values = [Y_start]  # The first fitted point is Y_start
+    
+    last_time = T_start
+    value = Y_start * (1.0 - eta) 
+    
+    # Iterate from the second measurement time onwards
+    for mt in measurement_times[1:]:
+        # 1. Exponential Increase/Growth toward Y_eq
+        dt = mt - last_time
+        value_intermediate = Y_eq - (Y_eq - value) * np.exp(-lamb * dt)        
+        
+        # 2. Multiplicative Step Decrease occurs *at* the measurement time mt
+        value = value_intermediate * (1.0 - eta)         
+        
+        # The fitted point is the value *before* the step at time mt
+        values.append(value_intermediate)                  
+        last_time = mt
+        
+    return np.array(values)
+
+
+def objective_function(x, tau, eta, Y_eq, Y_initial):
+    """Wrapper for curve_fit: fitting four parameters."""
+    return objective_function_helper(tau, eta, Y_eq, Y_initial, x)
+
+def yperturb(t_array, tau, eta, Y_eq, Y_initial, measurement_times):
+    """
+    Continuous-time simulation of an exponential system with stepwise 
+    multiplicative perturbations (used for plotting continuous lines).
+    """
+    if tau <= 0: raise ValueError("tau must be positive.")
+
+    lamb = 1.0 / tau
+    T_start = measurement_times[0]
+    last_time = T_start
+    value = Y_initial
+    y_values = []
+    step_idx = 0
+
+    for t in t_array:
+        dt = t - last_time
+        value_continuous = Y_eq - (Y_eq - value) * np.exp(-lamb * dt)
+
+        # Apply steps that occur at or before this time
+        while step_idx < len(measurement_times) and t >= measurement_times[step_idx]:
+            step_time = measurement_times[step_idx]
+            dt_step = step_time - last_time
+            value_continuous = Y_eq - (Y_eq - value) * np.exp(-lamb * dt_step)
+            value = value_continuous * (1.0 - eta)
+            last_time = step_time
+            step_idx += 1
+
+        if step_idx == 0 and t < measurement_times[0]:
+            y_values.append(Y_eq - (Y_eq - Y_initial) * np.exp(-lamb * (t - T_start)))
+        else:
+            dt_since_last = t - last_time
+            y_values.append(Y_eq - (Y_eq - value) * np.exp(-lamb * dt_since_last))
+
+    return np.array(y_values)
+
 t_fit = TIMES.copy()
 opl_fit = marker_values[0::2].copy()  # Grab the pre-flash values
 
@@ -115,22 +187,14 @@ x = np.array(t_fit)
 y = np.array(opl_fit)
 t_arr = np.linspace(0, x[-1] + 50, 1000)
 
-try:
-    import functions_prob_fit as pfunc
-    res, _ = spo.curve_fit(pfunc.objective_function, x, y, p0=p0, bounds=bounds, maxfev=50000, ftol=1e-10)
-    tau_fit, eta_fit, Y_eq_fit, Y_start_fit = res
-    
-    y_fit = pfunc.objective_function(x, tau_fit, eta_fit, Y_eq_fit, Y_start_fit)
-    fiterror = np.sqrt(np.nanmean((y - y_fit) ** 2))
-    
-    y_fit_arr = pfunc.yperturb(t_arr, tau_fit, eta_fit, Y_eq_fit, Y_start_fit, x)
-    Y0_fit = y_fit_arr[0]
-except Exception as e:
-    print(f"Fitting fallback triggered (local module may be missing): {e}")
-    tau_fit, eta_fit, Y_eq_fit, Y_start_fit = p0
-    fiterror = np.nan
-    y_fit, y_fit_arr = np.zeros_like(x), np.zeros_like(t_arr)
-    Y0_fit = 0.0
+res, _ = spo.curve_fit(objective_function, x, y, p0=p0, bounds=bounds, maxfev=50000, ftol=1e-10)
+tau_fit, eta_fit, Y_eq_fit, Y_start_fit = res
+
+y_fit = objective_function(x, tau_fit, eta_fit, Y_eq_fit, Y_start_fit)
+fiterror = np.sqrt(np.nanmean((y - y_fit) ** 2))
+
+y_fit_arr = yperturb(t_arr, tau_fit, eta_fit, Y_eq_fit, Y_start_fit, x)
+Y0_fit = y_fit_arr[0]
 
 
 # ==========================================

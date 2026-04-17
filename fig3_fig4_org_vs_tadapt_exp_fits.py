@@ -98,6 +98,7 @@ def process_and_fit_data(file_path, subject, param, t0_rege=60):
 
     param_cols = ['opl0406avg', 'OPL_pk_fit (nm)', 't_pk', 'tau_b_fit']
     merged_df['tacq'] = pd.to_numeric(merged_df['tacq'], errors='coerce').astype('Int64')
+
     df = merged_df.groupby(['tacq', 'bleaching(%)', 'Tall', 'datalabel'])[param_cols].median().reset_index()
 
     # Filter for dark adaptation replicates

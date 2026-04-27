@@ -30,11 +30,14 @@ $$y(t_{adapt})=y_{0}\left[1-K_{m}W\left(\frac{b_{0}}{K_{m}}e^{b_{0}/K_{m}}e^{-\f
 ### 3. Perturbed exponential model accounting for perturbations from repeated test flashes (Method 3)
 A unified model that describes the data as a function of experimental acquisition time ($t_{acq}$), simultaneously capturing the intrinsic exponential recovery in the dark and the discrete perturbations induced by sequential probing flashes. The model iterates through two steps:
 
-**Step 1: Multiplicative perturbation by a probing flash at time $t_{i-1}$:**
+**Step 1: Multiplicative perturbation by a probing flash at time $t_{i-1}$:
+
 $$\Delta Y(t_{i-1})=Y(t_{i-1})\times\eta$$
+
 $$Y^{\prime}(t_{i-1})=Y(t_{i-1})-\Delta Y(t_{i-1})$$
 
-**Step 2: Exponential recovery between measurement times $t_{i-1}$ and $t_{i}$:**
+**Step 2: Exponential recovery between measurement times $t_{i-1}$ and $t_{i}$:
+
 $$Y(t_{i})=Y_{sat}-(Y_{sat}-Y^{\prime}(t_{i-1}))e^{-(t_{i}-t_{i-1})/\tau}$$
 
 The parameters ($\tau$, $\eta$, $Y_{sat}$, $Y_{0}$) are optimized globally by minimizing the RMS error.

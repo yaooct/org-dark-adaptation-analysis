@@ -7,7 +7,7 @@ The codebase provides mathematical models to quantify the cone photoreceptors OR
 ## Overview of mathematical models
 This repository implements three complementary analytic models to quantify the recovery of ORG amplitude ($\Delta OPL_{max}$) and temporal dynamics (time-to-peak $t_{pk}$, late contraction rate $\tau_{b}$) during dark adaptation:
 
-### 1. Exponential model (Method 1)
+### 1. Exponential model based on first-order pigment regeneration dynamics (Method 1)
 This model evaluates ORG metrics against an effective dark adaptation time ($t_{adapt}$) derived from theoretical exponential photopigment regeneration. The fraction of bleached pigment $b(t)$ during regeneration is modeled as:
 
 $$b(t)=b_{0}e^{-t/t_{0}}$$
@@ -18,7 +18,16 @@ $$y(t)=A\cdot e^{-t_{adapt}/\tau}+C$$
 
 where $\tau$ is the recovery time constant and $C$ is the asymptotic saturation level.
 
-### 2. Probabilistic model (Method 2)
+### 2.  Rate-limited model of pigment pigment regeneration (Method 2)
+This model fits ORG recovery assuming that the process is rate-limited by the delivery of 11-cis-retinoid. The fraction of unbleached pigment $p(t)$ is calculated using the Lambert-W function ($W$):
+
+$$p(t)=1-K_{m}W\left(\frac{b_{0}}{K_{m}}e^{b_{0}/K_{m}}e^{-\frac{1+K_{m}}{K_{m}}vt}\right)$$
+
+where $K_{m}$ is the Michaelis constant (held at 0.2) and $v$ is the initial rate of recovery. ORG metrics are then expressed as a function of the RL-derived adaptation time and fit using a rate-limited scaling relation:
+
+$$y(t_{adapt})=y_{0}\left[1-K_{m}W\left(\frac{b_{0}}{K_{m}}e^{b_{0}/K_{m}}e^{-\frac{1+K_{m}}{K_{m}}vt_{adapt}}\right)\right]$$
+
+### 3. Perturbed exponential model accounting for perturbations from repeated test flashes (Method 3)
 A unified model that describes the data as a function of experimental acquisition time ($t_{acq}$), simultaneously capturing the intrinsic exponential recovery in the dark and the discrete perturbations induced by sequential probing flashes. The model iterates through two steps:
 
 **Step 1: Multiplicative perturbation by a probing flash at time $t_{i-1}$:**
@@ -30,14 +39,6 @@ $$Y(t_{i})=Y_{sat}-(Y_{sat}-Y^{\prime}(t_{i-1}))e^{-(t_{i}-t_{i-1})/\tau}$$
 
 The parameters ($\tau$, $\eta$, $Y_{sat}$, $Y_{0}$) are optimized globally by minimizing the RMS error.
 
-### 3. Rate-limited (RL) model
-This model fits ORG recovery assuming that the process is rate-limited by the delivery of 11-cis-retinoid. The fraction of unbleached pigment $p(t)$ is calculated using the Lambert-W function ($W$):
-
-$$p(t)=1-K_{m}W\left(\frac{b_{0}}{K_{m}}e^{b_{0}/K_{m}}e^{-\frac{1+K_{m}}{K_{m}}vt}\right)$$
-
-where $K_{m}$ is the Michaelis constant (held at 0.2) and $v$ is the initial rate of recovery. ORG metrics are then expressed as a function of the RL-derived adaptation time and fit using a rate-limited scaling relation:
-
-$$y(t_{adapt})=y_{0}\left[1-K_{m}W\left(\frac{b_{0}}{K_{m}}e^{b_{0}/K_{m}}e^{-\frac{1+K_{m}}{K_{m}}vt_{adapt}}\right)\right]$$
 
 ---
 

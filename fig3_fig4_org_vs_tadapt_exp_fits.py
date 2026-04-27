@@ -39,7 +39,7 @@ SUBJECTS = ['sub1', 'sub2', 'sub3']
 
 # Toggle which metrics to plot. 
 # Options: 'opl0406avg', 'OPL_pk_fit (nm)', 't_pk', 'tau_b_fit'
-METRICS = [ 't_pk', 'tau_b_fit']
+METRICS = [ 'opl0406avg', 'OPL_pk_fit (nm)']
 
 # Plotting Aesthetics
 COLORS = [
@@ -217,7 +217,7 @@ if __name__ == "__main__":
                 ax.set_ylabel(r'$\Delta$OPL$_\mathrm{max}$ (nm)')
             elif 'OPL_pk_fit' in param:
                 ax.set_ylim(Y_MIN, 167) 
-                ax.set_ylabel(r'$\Delta$OPL$_\mathrm{fitting,max}$ (nm)')
+                ax.set_ylabel(r'$\Delta$OPL$_\mathrm{max}^*$ (nm)')
 
             # Panel Labeling
             panel_idx = row_idx * 3 + col_idx

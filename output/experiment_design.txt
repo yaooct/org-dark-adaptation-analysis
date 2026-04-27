@@ -1,0 +1,21 @@
+Cone Dark Adaptation Protocol - Experiment Design
+=================================================
+
+[ Parameters ]
+T0 (Time constant)     : 60.0 s
+B_INIT (Initial bleach): 0.65
+B_OFFSET (probe bleach): 0.21
+Acq. Time (deliver test flashes): [20, 40, 60, 90, 130, 180, 230, 300, 400]
+
+[ Simulation Results ]
+Acq. Time (s)      | Effective Bleach     | Adaptation Time (s) 
+-----------------------------------------------------------------
+20                 | 0.11                 | 20                  
+40                 | 0.12                 | 27                  
+60                 | 0.13                 | 31                  
+90                 | 0.14                 | 44                  
+130                | 0.16                 | 61                  
+180                | 0.17                 | 80                  
+230                | 0.18                 | 88                  
+300                | 0.19                 | 111                 
+400                | 0.20                 | 148                 

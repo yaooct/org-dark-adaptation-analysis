@@ -245,50 +245,119 @@ ax1.add_patch(patches.Rectangle((5.5, 1.25), 0.6, 0.2, facecolor='white', edgeco
 ax1.text(6.3, 1.35, r'2.1-s OCT volume recording', va='center', ha='left')
 
 
+# %%
 # ------------------------------------------
 # Panel b: Bleach Simulation & Fitting
 # ------------------------------------------
-t_baseline = np.arange(FINAL_T)
+T0 = 60.0             # Time constant (s)
+B_INIT = 0.65         # Initial bleaching level
+B_OFFSET = 0.21      # Fractional bleach from probing flashes
+TIMES = [20, 40, 60, 90, 130, 180, 230, 300, 400]  # Probe flash times (t_acq)
+FINAL_T = 500
 
-# Unperturbed regeneration curve
-b_curve_model = B_INIT * np.exp(-t_baseline / T0)
-ax2.plot(t_baseline, 1 - b_curve_model, color='blue', lw=1.2, 
-         label=f"Pigment regeneration ($t_{{0}} = {T0}\\,\\mathrm{{s}}$)")
+# Initialize tracking variables
+b_prev = B_INIT
+t_prev = 0
+
+all_times, all_b_values = [0], [B_INIT]
+marker_times, marker_values = [], []
+
+# --- Run Bleach/Regeneration Simulation ---
+for t in TIMES:
+    # 1. Smooth regeneration curve between flashes
+    t_range = np.linspace(t_prev, t, 500)
+    b_curve = b_prev * np.exp(-(t_range - t_prev) / T0)
+    
+    all_times.extend(t_range)
+    all_b_values.extend(b_curve)
+    
+    # 2. Calculate drop caused by the probe flash
+    b_before_flash = b_prev * np.exp(-(t - t_prev) / T0)
+    frac_b = B_OFFSET * (1 - b_before_flash)
+    b_after_flash = b_before_flash + frac_b
+    
+    # 3. Store points for vertical drop lines
+    marker_times.extend([t, t])
+    marker_values.extend([b_before_flash, b_after_flash])
+    
+    # 4. Update for next iteration
+    b_prev = b_after_flash
+    t_prev = t
+    all_times.append(t)
+    all_b_values.append(b_after_flash)
+
+# Add final tail decay after the last flash
+t_range = np.linspace(t_prev, FINAL_T, 100)
+all_times.extend(t_range)
+all_b_values.extend(b_prev * np.exp(-(t_range - t_prev) / T0))
+
+# Convert bleach fractions to "available pigment" (1 - bleach)
+marker_values_avail = 1 - np.array(marker_values)
+all_avail_pigment = 1 - np.array(all_b_values)
+
+# ------------------------------------------
+# Plot Unperturbed Regeneration Curve
+# ------------------------------------------
+t_baseline = np.arange(FINAL_T)
+avail_curve_ideal = 1 - (B_INIT * np.exp(-t_baseline / T0))
+
+ax2.plot(t_baseline, avail_curve_ideal, color='blue', lw=1.5, 
+         label=f"Pigment regeneration \n($t_{{0}} = {T0}\\,\\mathrm{{s}}$)")
+
+# ------------------------------------------
+# Plot Perturbed Trajectory & Drops
+# ------------------------------------------
+# Continuous bleaching/regeneration trajectory
+ax2.plot(all_times, all_avail_pigment, color='black', linestyle='--', lw=1.2,
+         label=f"Simulated remaining \npigment level")
 
 # Fractional bleaching drop lines
 for i in range(0, len(marker_times), 2):
-    lbl = r'Pigment bleached by test flash' if i == 0 else None
-    ax2.plot(marker_times[i:i+2], marker_values[i:i+2], color='black', lw=2.5, label=lbl)
-    bfrac.append(marker_values[i+1] - marker_values[i])
+    lbl = f'Pigment bleached \nby test flash' if i == 0 else None
+    ax2.plot(marker_times[i:i+2], marker_values_avail[i:i+2], color='black', lw=2.5, label=lbl)
+    
+# Fractional bleaching 
+print(f'effective bleach level:')
+for i in range(0, len(marker_times), 2):
+    print(f'{(marker_values_avail[i]-marker_values_avail[i+1]):.2f}')
 
-# Continuous bleaching/regeneration trajectory
-ax2.plot(all_times, 1 - np.array(all_b_values), color='black', linestyle='--', lw=1.2,
-         label="Simulated remaining pigment level")
+# Pre-flash data points
+x_data = TIMES
+y_data = marker_values_avail[0::2]
+ax2.plot(x_data, y_data, marker='*', markersize=12, color='red', 
+        linestyle='None', alpha=0.9, label='Measurement')
 
-# Data vs Fit Visualization
-ax2.plot(x, y, marker='*', markersize=12, color='#333333', linestyle='None', alpha=0.9, label='Measured data')
+# ------------------------------------------
+# Adaptation Time Conversion
+# ------------------------------------------
+# Pick a specific acquisition time to highlight (e.g., t_acq = 90s)
+t_acq_example = 300
+idx = TIMES.index(t_acq_example)
+y_adapt = y_data[idx]
 
-if np.any(y_fit):
-    ax2.plot(x, y_fit, marker='o', color='#d62728', linestyle='None', alpha=0.5, label='Fitted data')
-
-if np.any(y_fit_arr):
-    fit_label = (f'Probabilistic fit:\n$\\tau={tau_fit:.0f}$, $\\eta={eta_fit:.2f}$,\n'
-                 f'$Y_{{sat}}={Y_eq_fit:.2f}, Y_{0}={Y0_fit:.2f}$, RMS={fiterror:.2f}')
-    ax2.plot(t_arr, y_fit_arr, color='#d62728', linestyle='-.', lw=1.2, alpha=0.8, label=fit_label)
-
-# Adaptation Time Annotations
-y_adapt = 0.7819937  
+ax2.plot([t_acq_example, t_acq_example], [0.2, y_adapt], color='black', linestyle=':', lw=1.5, alpha=0.6)
+ 
+# Calculate the corresponding adaptation time
 t_adapt = -T0 * np.log((1 - y_adapt) / B_INIT)
+print(f'adaptation time:\n{(-T0 * np.log((1 - y_data) / B_INIT)).round()}s')
+# Draw mapping lines
+ax2.plot([0, t_acq_example], [y_adapt, y_adapt], color='blue', linestyle=':', lw=1.5, alpha=0.6)
+ax2.plot([t_adapt, t_adapt], [0.2, y_adapt], color='blue', linestyle=':', lw=1.5, alpha=0.6)
+ax2.plot(t_adapt, y_adapt, marker='o', color='blue', markersize=6)
 
-ax2.plot([0, 90], [y_adapt, y_adapt], color='blue', linestyle='--', lw=1.5, alpha=0.5)
-ax2.plot([t_adapt, t_adapt], [0.2, y_adapt], color='blue', linestyle='--', lw=1.5, alpha=0.5)
-ax2.plot(t_adapt, y_adapt, marker='o', color='blue')
-ax2.text(t_adapt - 5, 0.16, 'Adaptation\ntime', color='blue', ha='center', va='top')
+ax2.text(t_adapt - 5, 0.22, rf'$t_{{adapt}}$' + '\n' + f'({t_adapt:.1f} s)', 
+        color='blue', ha='right', va='bottom', fontsize=9)
+ax2.text(t_acq_example - 5, 0.22, rf'$t_{{acq}}$' + '\n' + f'({t_acq_example} s)', 
+        color='black', ha='right', va='bottom', fontsize=9)
 
-# Formatting Panel b
-ax2.set(xlabel='Acquisition time (s)', ylabel='Available pigment', xlim=(0, FINAL_T), ylim=(0.2, 1.02))
+# ------------------------------------------
+# Formatting
+# ------------------------------------------
+ax2.set_xlabel('Time (s)')
+ax2.set_ylabel('Available Pigment')
+ax2.set_xlim(0, FINAL_T)
+ax2.set_ylim(0.2, 1.02)
 ax2.yaxis.set_major_formatter(plt.FuncFormatter(lambda val, _: f'{val * 100:.0f}%'))
-
 ax2.spines['top'].set_visible(False)
 ax2.spines['right'].set_visible(False)
 ax2.legend(frameon=False, loc='lower right', bbox_to_anchor=(1.05, 0))
@@ -300,6 +369,6 @@ plt.tight_layout()
 
 # Uncomment to save the figure automatically
 os.makedirs('./figs', exist_ok=True)
-plt.savefig('./figs/fig7_protocol_bleach_simu.png', dpi=600, bbox_inches='tight')
+plt.savefig('./figs/fig7_protocol_bleach_simu_expModel.png', dpi=600, bbox_inches='tight')
 
 plt.show()

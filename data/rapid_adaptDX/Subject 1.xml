@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- MacuLogix Test Report(s) Export -->
+<MacuLogixTestReport>
+  <LimitedLicenseWarning>
+    Terms of use prohibit use of this data for clinical studies intended to provide a definitive assessment of therapeutic efficacy.
+  </LimitedLicenseWarning>
+  <ClinicInfo>
+    <clinic_name>Dr. Dennis J. Guerrieri</clinic_name>
+    <clinic_address1>231 C Street</clinic_address1>
+    <clinic_address2></clinic_address2>
+    <clinic_city>Davis</clinic_city>
+    <clinic_state>CA</clinic_state>
+    <clinic_zip>95616</clinic_zip>
+    <clinic_phone>5307584000</clinic_phone>
+    <clinic_email>DJGUERRIERI@gmail.com</clinic_email>
+  </ClinicInfo>
+  <Patient>
+    <last_name>Zawadski</last_name>
+    <first_name>Robert</first_name>
+    <middle_name></middle_name>
+    <sex>M</sex>
+    <date_of_birth>04-23-1975</date_of_birth>
+    <age_at_test>50</age_at_test>
+    <patient_identifier>JR080374</patient_identifier>
+    <Test>
+      <test_eye>right</test_eye>
+      <test_date>07-31-2025</test_date>
+      <test_time>12:22</test_time>
+      <protocol_name>Rapid Test</protocol_name>
+      <pupil_size_mm>6.5</pupil_size_mm>
+      <prescription_sphercial></prescription_sphercial>
+      <prescription_cylindrical></prescription_cylindrical>
+      <prescription_axis></prescription_axis>
+      <trial_lens_sphercial></trial_lens_sphercial>
+      <trial_lens_cylindrical></trial_lens_cylindrical>
+      <trial_lens_axis></trial_lens_axis>
+      <Threshold>
+        <threshold_time_minutes>0.44</threshold_time_minutes>
+        <threshold_value>1.5</threshold_value>
+        <threshold_validity>true</threshold_validity>
+      </Threshold>
+      <Threshold>
+        <threshold_time_minutes>1.26</threshold_time_minutes>
+        <threshold_value>2.2</threshold_value>
+        <threshold_validity>false</threshold_validity>
+      </Threshold>
+      <Threshold>
+        <threshold_time_minutes>1.76</threshold_time_minutes>
+        <threshold_value>2.4</threshold_value>
+        <threshold_validity>true</threshold_validity>
+      </Threshold>
+      <Threshold>
+        <threshold_time_minutes>2.59</threshold_time_minutes>
+        <threshold_value>2.4</threshold_value>
+        <threshold_validity>true</threshold_validity>
+      </Threshold>
+      <Threshold>
+        <threshold_time_minutes>3.34</threshold_time_minutes>
+        <threshold_value>2.5</threshold_value>
+        <threshold_validity>true</threshold_validity>
+      </Threshold>
+      <Threshold>
+        <threshold_time_minutes>4.11</threshold_time_minutes>
+        <threshold_value>2.6</threshold_value>
+        <threshold_validity>true</threshold_validity>
+      </Threshold>
+      <Threshold>
+        <threshold_time_minutes>4.81</threshold_time_minutes>
+        <threshold_value>2.7</threshold_value>
+        <threshold_validity>true</threshold_validity>
+      </Threshold>
+      <Threshold>
+        <threshold_time_minutes>5.56</threshold_time_minutes>
+        <threshold_value>3.3</threshold_value>
+        <threshold_validity>false</threshold_validity>
+      </Threshold>
+      <Threshold>
+        <threshold_time_minutes>5.92</threshold_time_minutes>
+        <threshold_value>3.2</threshold_value>
+        <threshold_validity>true</threshold_validity>
+      </Threshold>
+      <rod_intercept_minutes>5.48</rod_intercept_minutes>
+      <fixation_error_rate>0.2222</fixation_error_rate>
+      <rod_intercept_message>Rod Intercept is 5.48 minutes.</rod_intercept_message>
+      <fixation_error_message>Fixation Error Rate is 22%.</fixation_error_message>
+      <bleach_error_message></bleach_error_message>
+      <main_graph_diagnostic_message></main_graph_diagnostic_message>
+      <operator_comment> </operator_comment>
+    </Test>
+  </Patient>
+</MacuLogixTestReport>

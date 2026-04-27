@@ -49,14 +49,15 @@ The parameters ($\tau$, $\eta$, $Y_{sat}$, $Y_{0}$) are optimized globally by mi
 
 The scripts map directly to the figures presented in the manuscript. All scripts rely on the local configuration file `plot_configuration_manuscript.py` to ensure consistent aesthetics.
 
-| Script Name | Description & Manuscript Figure |
+| Script Name | Description |
 | :--- | :--- |
 | `plot_configuration_manuscript.py` | Global configuration file for standardizing matplotlib aesthetics. |
-| `fig1_fig2_org_responses_visualizations.py` | Visualize ORG response traces. **(Generates Fig. 1 & Fig. 2)** |
-| `fig3_fig4_org_vs_tadapt_exp_fits.py` | Fits ORG amplitude and dynamic parameters to the _exponential model_ (Method 1), as functions of dark adaptation time $t_{adapt}$. **(Generates Fig. 3 & Fig. 4)** |
-| `fig5_fig6_org_vs_tacq_prob_fits.py` | Fits ORG amplitude and dynamic parameters to the probabilistic model (Method 2), as functions of acquisition time $t_{acq}$. **(Generates Fig. 5 & Fig. 6)** |
-| `fig7_protocol_bleach_simu.py` | Simulates the experimental timeline and theoretical pigment regeneration with test bleaches. **(Generates Fig. 7)** |
-| `fig8_org_vs_tadapt_RL_fits.py` | Fits ORG amplitude and dynamic parameters to the _Rate-limited (RL) model_, as functions of dark adaptation time $t_{adapt}$. **(Generates Fig. 8)** |
+| `fig1_fig2_org_responses_visualizations.py` | Visualize ORG response traces. |
+| `fig3_fig4_org_vs_tadapt_exp_fits.py` | Fits ORG amplitude and dynamic parameters to the _exponential model_ (Method 1), as functions of dark adaptation time $t_{adapt}$. |
+| `fig5_fig6_org_vs_tacq_prob_fits.py` | Fits ORG amplitude and dynamic parameters to the probabilistic model (Method 2), as functions of acquisition time $t_{acq}$. |
+| `fig7_protocol_bleach_simu.py` | Simulates the experimental timeline and theoretical pigment regeneration with test bleaches. |
+| `fig8_org_vs_tadapt_RL_fits.py` | Fits ORG amplitude and dynamic parameters to the _Rate-limited (RL) model_, as functions of dark adaptation time $t_{adapt}$. |
+| `fig_A1_compute_from_tacq_to_tadapt.py` | Simulates photopigment regeneration and fractional bleaching to visualize the conversion from acquisition time $t_{acq}$ to effective adaptation time $t_{adapt}$. |
 
 ### Data Directory (`/data/`)
 Processed ORG paramters collected from 8-10 repeated trails from three subjects, extracted using an overdamped RLC model fit, $$\Delta OPL_{fit} = A_1(-e^{-t/\tau_a} + e^{-t/\tau_b})$$, further details can be found in the manuscript.
@@ -76,7 +77,7 @@ The `.csv` datasets (`_combined_data` and `_median_data`) contain the following 
 
 #### Primary ORG parameters
 * **`opl0406avg`**: Corresponds to **$\Delta OPL_{max}$**. The maximum optical path length change of the cone outer segment, calculated directly from the raw measurements by averaging the five highest $\Delta OPL$ values.
-* **`OPL_pk_fit`**: Corresponds to **$\Delta OPL_{fitting,max}$**. The peak amplitude of the outer segment elongation derived mathematically from the overdamped RLC model fit.
+* **`OPL_pk_fit`**: Corresponds to **$\Delta OPL^{*}_{max}$**. The peak amplitude of the outer segment elongation derived mathematically from the overdamped RLC model fit.
 * **`t_pk`**: Corresponds to **$t_{pk}$**. The time-to-peak (in seconds), by solving t for the first zero of the RLC model’s derivative d($\Delta OPL_{fit}$)/dt = 0.
 * **`tau_b_fit`**: Corresponds to **$$\tau_{b}$$**. The late contraction rate (in $s^{-1}$) of the outer segment, describing the late, slow contraction rate of the outer segment.
 

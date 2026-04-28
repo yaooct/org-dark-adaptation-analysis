@@ -1,6 +1,6 @@
 # Analysis of ORG parameters during dark adaptation
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.xxxxxxx.svg)](https://doi.org/10.5281/zenodo.xxxxxxx) This repository contains the custom Python analysis scripts and processed datasets accompanying the manuscript: **"Dark adaptation of the cone optoretinogram"**.
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19834538.svg)](https://doi.org/10.5281/zenodo.19834538) This repository contains the custom Python analysis scripts and processed datasets accompanying the manuscript: **"Dark adaptation of the cone optoretinogram"**.
 
 The codebase provides mathematical models to quantify the cone photoreceptors ORG responses during dark adaptation.
 
